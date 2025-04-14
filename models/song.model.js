@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Author = require('./author.model');
+const Album = require('./albums.model');
 
 const songSchema = new mongoose.Schema({
     sName: {
