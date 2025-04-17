@@ -7,5 +7,6 @@ router.use(express.urlencoded({ extended: true }));
 router.post('/create-album', uploader, albumController.createAlbum);
 router.get('/get-album' , albumController.getAlbum);
 router.delete('/delete-album/:id', albumController.deleteAlbum);
+router.get('/albums', albumController.getAllAlbumsWithSongs);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const soniquealbums = require('../models/albums.model');
 const Upload = require("../config/upload");
+const soniqueSong = require('../models/song.model');
 
 exports.createAlbum = async (req, res) => {
     try {
@@ -39,6 +40,27 @@ exports.getAlbum = async (req, res) => {
     } catch (error) {
         console.error('Error fetching songs:', error);
         res.status(500).json({ error: 'Internal server error', details: error.message });
+    }
+}
+
+exports.getAllAlbumsWithSongs = async (req, res) => {
+    try {
+        const albums = await soniquealbums.find();
+
+        if (!albums.length) {
+            return res.status(404).json({ error: 'No albums found' });
+        }
+
+        const albumsWithSongs = await Promise.all(albums.map(async (album) => {
+            const songs = await soniqueSong.find({ sAlbum: album.albumName }).populate('sAlbum', 'albumName');
+
+            return { album, songs };
+        }));
+
+        res.status(200).json({ message: 'Album and songs fetched successfully', albumsWithSongs });
+
+    } catch (error) {
+        res.status(500).json({ error: 'Internal server error' });
     }
 }
 

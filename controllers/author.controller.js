@@ -43,32 +43,6 @@ exports.getAuthors = async (req, res) => {
     }
 }
 
-// exports.getAllAuthorsWithSongs = async (req, res) => {
-//     try {
-//         // Fetch all authors from the database
-//         const authors = await soniqueAuthor.find();
-
-//         if (!authors.length) {
-//             return res.status(404).json({ error: 'No authors found' });
-//         }
-
-//         // Fetch songs for each author and map the result
-//         const authorsWithSongs = await Promise.all(authors.map(async (author) => {
-//             // Fetch the songs that belong to the author using the author's name (sAuthor field is a string here)
-//             const songs = await soniqueSong.find({ sAuthor: author.auName }).populate('sAuthor', 'auName');
-
-//             return { author, songs };
-//         }));
-
-//         // Respond with authors and their respective songs
-//         res.status(200).json({ message: 'Authors and songs fetched successfully', authorsWithSongs });
-
-//     } catch (error) {
-//         // If there's an error, send a 500 response
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// }
-
 exports.getAllAuthorsWithSongs = async (req, res) => {
     try {
         const authors = await soniqueAuthor.find();
@@ -78,29 +52,50 @@ exports.getAllAuthorsWithSongs = async (req, res) => {
         }
 
         const authorsWithSongs = await Promise.all(authors.map(async (author) => {
-            const songs = await soniqueSong.find({ sAuthor: author.auName });
+            const songs = await soniqueSong.find({ sAuthor: author.auName }).populate('sAuthor', 'auName');
 
-            const songsWithAlbums = await Promise.all(songs.map(async (song) => {
-                const album = await soniqueAlbum.findOne({ albumName: song.sAlbum }); 
-                return {
-                    ...song.toObject(),
-                    album: album || null 
-                };
-            }));
-
-            return {
-                author,
-                songs: songsWithAlbums
-            };
+            return { author, songs };
         }));
 
-        res.status(200).json({ message: 'Authors and songs with albums fetched successfully', authorsWithSongs });
+        res.status(200).json({ message: 'Authors and songs fetched successfully', authorsWithSongs });
 
     } catch (error) {
-        console.error('Error fetching authors, songs or albums:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
-};
+}
+
+// exports.getAllAuthorsWithSongs = async (req, res) => {
+//     try {
+//         const authors = await soniqueAuthor.find();
+
+//         if (!authors.length) {
+//             return res.status(404).json({ error: 'No authors found' });
+//         }
+
+//         const authorsWithSongs = await Promise.all(authors.map(async (author) => {
+//             const songs = await soniqueSong.find({ sAuthor: author.auName });
+
+//             const songsWithAlbums = await Promise.all(songs.map(async (song) => {
+//                 const album = await soniqueAlbum.findOne({ albumName: song.sAlbum });
+//                 return {
+//                     ...song.toObject(),
+//                     album: album || null
+//                 };
+//             }));
+
+//             return {
+//                 author,
+//                 songs: songsWithAlbums
+//             };
+//         }));
+
+//         res.status(200).json({ message: 'Authors and songs with albums fetched successfully', authorsWithSongs });
+
+//     } catch (error) {
+//         console.error('Error fetching authors, songs or albums:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
 
 exports.deleteAuthor = async (req, res) => {
     try {
