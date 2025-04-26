@@ -22,7 +22,7 @@ async function main(email, token) {
                     <p style="font-size: 16px;">We received a request to reset your password for your Sonique Music account. To proceed, please click the link below to set a new password.</p>
                     
                     <p style="font-size: 16px; margin: 20px 0;">
-                        <a href='http://localhost:5173/sonique/user/reset-password?token=${token}' style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block;">Reset Password</a>
+                        <a href='https://sonique-user.vercel.app/sonique/user/reset-password?token=${token}' style="padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; font-weight: bold; border-radius: 5px; display: inline-block;">Reset Password</a>
                     </p>
                     
                     <p style="font-size: 14px; color: #777;">If you didn’t request a password reset, please ignore this email. Rest assured, your account is still safe!</p>
