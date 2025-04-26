@@ -14,7 +14,7 @@ dotenv.config();
 connectDB();
 
 const corsOptions = {
-    origin: 'https://admin-panel-five-woad.vercel.app',
+    origin: ['http://localhost:5173', 'https://sonique-user.vercel.app', 'https://admin-panel-five-woad.vercel.app'],
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     credentials: true,
 };
