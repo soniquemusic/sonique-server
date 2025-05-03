@@ -80,6 +80,44 @@ exports.userProfile = async (req, res) => {
     }
 }
 
+exports.updateUserProfile = async (req, res) => {
+    const {
+        fullName,
+        email,
+        gender,
+        mobileNumber
+    } = req.body;
+    try {
+        const user = await soniqueUser.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const updatedData = {
+            fullName: fullName || user.fullName,
+            email: email || user.email,
+            gender: gender || user.gender,
+            mobileNumber: mobileNumber || user.mobileNumber
+        };
+
+        const updatedUser = await soniqueUser.findByIdAndUpdate(req.user.id, updatedData, { new: true });
+
+        res.status(200).json({
+            message: 'Profile updated successfully',
+            user: {
+                id: updatedUser._id,
+                fullName: updatedUser.fullName,
+                email: updatedUser.email,
+                gender: updatedUser.gender,
+                mobileNumber: updatedUser.mobileNumber
+            }
+        });
+    } catch (error) {
+        console.error('Error updating user profile:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 exports.forgetPassword = async (req, res) => {
     const { email } = req.body;
     try {
