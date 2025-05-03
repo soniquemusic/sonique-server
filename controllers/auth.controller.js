@@ -138,6 +138,39 @@ exports.forgetPassword = async (req, res) => {
     }
 };
 
+exports.changePassword = async (req, res) => {
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || !newPassword || !confirmPassword) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (newPassword !== confirmPassword) {
+        return res.status(400).json({ message: "New password and confirm password do not match" });
+    }
+
+    try {
+        const user = await soniqueUser.findById(req.user.id);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(newPassword, salt);
+
+        await user.save();
+
+        res.status(200).json({ message: "Password changed successfully" });
+    } catch (error) {
+        console.error("Error changing password:", error.message);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
 exports.resetPassword = async (req, res) => {
     try {
         const { token } = req.query;

@@ -9,5 +9,6 @@ router.get('/profile', authenticateToken, authController.userProfile);
 router.post('/forgot-password', authController.forgetPassword);
 router.post('/reset-password', authController.resetPassword);
 router.put('/update-profile', authenticateToken, authController.updateUserProfile);
+router.post("/change-password", authenticateToken, authController.changePassword);
 
 module.exports = router;
